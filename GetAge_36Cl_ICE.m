@@ -129,15 +129,18 @@ function [ ] = GetAge_36Cl_ICE()
         
         t_expo = 300000;
         t_vector = [0:100:t_expo];
-        t_degla = 10000; % LGM
+        t_LGM = 20000;
+        t_degla = 10000; 
         thick_test = [30 60 100 150 200];
         
         for i=1:length(thick_test)
         ice_thickness = thick_test(i).*100; % in cm
         
         z_history=ones(1,length(t_vector)).*ice_thickness;
-        i_degla = find(t_vector<t_degla);
-        z_history(i_degla)=t_vector(i_degla).*ice_thickness/t_degla;
+        i_postgla = find(t_vector<t_degla);
+        z_history(i_postgla)=.0;
+        i_degla = find((t_vector>=t_degla)&(t_vector<t_LGM));
+        z_history(i_degla)=(t_vector(i_degla)-t_degla).*ice_thickness/(t_LGM-t_degla);
 
                  
         depth_profile_speed(t_vector,z_history,...

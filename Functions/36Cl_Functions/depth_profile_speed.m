@@ -101,7 +101,7 @@ N_samples = length(z_vector);
                     % get production rates
                     [~,P36_s_tmp,P36_th_tmp,P36_eth_tmp,P36_mu_tmp,P36_rad_tmp] = prodz36_speed(Const_cosmo,Param_cosmo,sf,flag,depth_time_vector_thick*Param_site.rho_rock);
                     % total production rate within the sample at surface
-                    P_cosmo_tmp = P36_s+P36_th+P36_eth+P36_mu;
+                    P_cosmo_tmp = P36_s_tmp+P36_th_tmp+P36_eth_tmp+P36_mu_tmp;
                     
                     % Sum production rate over the sample thickness
                     P_cosmo = P_cosmo + P_cosmo_tmp;
@@ -121,7 +121,7 @@ N_samples = length(z_vector);
                 P36_eth = P36_eth./length(d_integ_samp);
                 P36_rad = P36_rad./length(d_integ_samp);
                 P36_mu = P36_mu./length(d_integ_samp);
-            
+
             % Compute scaling due to the ice cover
                 % Production rate within ice at surface
                 [~,P36_s_ice_0,P36_th_ice_0,P36_eth_ice_0,P36_mu_ice_0,P36_rad_ice_0] = prodz36_speed(Const_cosmo,Param_cosmo_ICE,sf_ICE,flag,depth_time_vector_surf);
@@ -132,16 +132,16 @@ N_samples = length(z_vector);
                 P_cosmo_ice_depth = P36_s_ice + P36_th_ice + P36_eth_ice + P36_mu_ice;
                 
                 % Get scaling factor accounting for the ice thickness
-                Scaling_ice = P_cosmo_ice_depth ./ P_cosmo_ice_zero;
+                Scaling_ice = P_cosmo_ice_depth./P_cosmo_ice_zero;
                 
             % Get the scaled Production rate
-            P_tot_cor = P_cosmo .* Scaling_ice + P36_rad;
-            P36_s_cor = P36_s .* Scaling_ice;
-            P36_eth_cor = P36_eth .* Scaling_ice;
-            P36_th_cor = P36_th .* Scaling_ice;
-            P36_mu_cor = P36_mu .* Scaling_ice;
-         
-            mean(P36_mu./P_cosmo)
+            %P_tot_cor = P_cosmo .* Scaling_ice + P36_rad;
+            P36_s_cor = P36_s .* P36_s_ice./P36_s_ice_0;
+            P36_eth_cor = P36_eth .* P36_eth_ice./P36_eth_ice_0;
+            P36_th_cor = P36_th .* P36_th_ice./P36_th_ice_0;
+            P36_mu_cor = P36_mu .* P36_mu_ice./P36_mu_ice_0;
+            
+            P_tot_cor = P36_s_cor+P36_eth_cor+P36_th_cor+P36_th_cor+ P36_rad;
             
         % Get the amount of 36Cl for each time step
           N36_prod = P_tot_cor.*(1.0-exp(-Const_cosmo.lambda36*deltat))./Const_cosmo.lambda36;
@@ -154,24 +154,39 @@ N_samples = length(z_vector);
           
         if(flag.plot)
             figure(1);  
-            
-            subplot(4,1,1); 
+      
+            subplot(2,2,1); 
             %plot(t_vector,P_cosmo); hold on;
             plot(-t_vector,P_tot_cor); hold on;
-%             plot(t_vector,P36_s_cor); 
-%             plot(t_vector,P36_eth_cor); 
-%             plot(t_vector,P36_th_cor); 
-%             plot(t_vector,P36_mu_cor); 
+%              plot(-t_vector,P36_s_cor); 
+%              plot(-t_vector,P36_eth_cor); 
+%              plot(-t_vector,P36_th_cor); 
+%              plot(-t_vector,P36_mu_cor); 
 %             
             
-            subplot(4,1,2); 
+            subplot(2,2,2); 
             plot(-t_vector,depth_time_vector./100); hold on;
             
-            subplot(4,1,3);  
+            subplot(2,2,3);  
             plot(-t_vector,(N36_cum-flip(cumsum(flip(N36_rad)))));hold on;
             
-            subplot(4,1,4);
+            subplot(2,2,4);
             plot(-t_vector,(N36_cum-flip(cumsum(flip(N36_rad))))./N_calc_tot(i).*100);hold on;
+            
+            figure(2);
+            subplot(2,1,1)
+            plot(-t_vector,P_cosmo_ice_depth); hold on;
+            plot(-t_vector,P36_s_ice); 
+            plot(-t_vector,P36_th_ice); 
+            plot(-t_vector,P36_eth_ice); 
+            plot(-t_vector,P36_mu_ice); 
+            
+            subplot(2,1,2)
+            plot(-t_vector,P_cosmo_ice_depth./P_cosmo_ice_depth); hold on;
+            plot(-t_vector,P36_s_ice./P_cosmo_ice_depth);
+            plot(-t_vector,P36_th_ice./P_cosmo_ice_depth); 
+            plot(-t_vector,P36_eth_ice./P_cosmo_ice_depth); 
+            plot(-t_vector,P36_mu_ice./P_cosmo_ice_depth); 
         end
     end
 %end       
