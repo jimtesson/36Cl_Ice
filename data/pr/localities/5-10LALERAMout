@@ -1,0 +1,7 @@
+{
+	"../Octave/data/pr/localities/5-10LALERAMin": {
+		"LocalPR": [5.854597654,0.1274578185],
+		"SLHLPR": [4.200465521,0.09144645005],
+		"ScalFact": 1.393797336
+	}
+}

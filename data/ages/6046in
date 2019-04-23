@@ -1,0 +1,53 @@
+{
+    "Name": "Testing",
+    "gdbName": "Muscheler et al., 2005",
+    "execId": 6046,
+    "Nucl": 10,
+    "Scheme": 1,
+    "Atm": 0,
+    "GMDB": 1,
+    "PR": [
+        4.11266413,
+        0.1918629035
+    ],
+    "Samples": [
+        "B30"
+    ],
+    "Age": [
+        0,
+        0
+    ],
+    "Lat": [
+        6.50811
+    ],
+    "Lon": [
+        -72.34506
+    ],
+    "Alt": [
+        4059
+    ],
+    "Thick": [
+        2
+    ],
+    "Shield": [
+        0.993
+    ],
+    "Dens": [
+        2.75
+    ],
+    "Eros": [
+        0
+    ],
+    "NuclCon": [
+        325475
+    ],
+    "NuclErr": [
+        10047
+    ],
+    "NuclNorm": [
+        ""
+    ],
+    "Notes": -9999,
+    "selectedMarkers": [],
+    "prMode": 0
+}
