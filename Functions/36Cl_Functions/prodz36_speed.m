@@ -1,4 +1,4 @@
-function [P36_tot,P36_s,P36_th,P36_eth,P36_mu] = prodz36_speed(Const_cosmo,Param_cosmo,sf,flag,e)
+function [P36_tot,P36_s,P36_th,P36_eth,P36_mu,P36_rad] = prodz36_speed(Const_cosmo,Param_cosmo,sf,flag,e)
 % The prodz36_speed function computes the 36Cl production rate for a  
 % vector of samples as function of the depth. Follows the Gosse & Philipps
 % (2001) formulation. Fast muon follow the Heisinger et al. (2002b,a) formulation 
