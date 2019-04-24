@@ -141,16 +141,21 @@ N_samples = length(z_vector);
             P36_th_cor = P36_th .* P36_th_ice./P36_th_ice_0;
             P36_mu_cor = P36_mu .* P36_mu_ice./P36_mu_ice_0;
             
-            P_tot_cor = P36_s_cor+P36_eth_cor+P36_th_cor+P36_th_cor+ P36_rad;
+            P_tot_cor = P36_s_cor+P36_eth_cor+P36_th_cor+P36_mu_cor+P36_rad;
             
-        % Get the amount of 36Cl for each time step
-          N36_prod = P_tot_cor.*(1.0-exp(-Const_cosmo.lambda36*deltat))./Const_cosmo.lambda36;
-          N36_cum = flip(cumsum(flip(N36_prod)));
-        % radiogenic decay of the 36Cl stock
-          N36_rad = N36_cum .* (1-exp(-Const_cosmo.lambda36*deltat));
-        % Total 36Cl 
-          N_calc_tot(i) = sum(N36_prod) - sum(N36_rad);
-          N_calc_tot_uncert(i) = .0;
+         % Compute Total concentration
+           N_calc_tot(i)=.0;
+           N36=zeros(1,length(t_vector));
+           PP=zeros(1,length(t_vector));
+           
+           f1=exp(-Const_cosmo.lambda36*deltat);
+           f2=(1.0-exp(-Const_cosmo.lambda36*deltat))./Const_cosmo.lambda36;
+           P=fliplr(P_tot_cor);
+          for it=1:length(t_vector)
+              N_calc_tot(i)=N_calc_tot(i).*f1 + P(it).*f2;
+              N36(it)=N_calc_tot(i);
+              PP(it)=P(it);
+          end
           
         if(flag.plot)
             figure(1);  
@@ -168,25 +173,11 @@ N_samples = length(z_vector);
             plot(-t_vector,depth_time_vector./100); hold on;
             
             subplot(2,2,3);  
-            plot(-t_vector,(N36_cum-flip(cumsum(flip(N36_rad)))));hold on;
+            plot(-fliplr(t_vector),N36);hold on;
             
             subplot(2,2,4);
-            plot(-t_vector,(N36_cum-flip(cumsum(flip(N36_rad))))./N_calc_tot(i).*100);hold on;
+            plot(-fliplr(t_vector),N36./N_calc_tot(i).*100);hold on;
             
-            figure(2);
-            subplot(2,1,1)
-            plot(-t_vector,P_cosmo_ice_depth); hold on;
-            plot(-t_vector,P36_s_ice); 
-            plot(-t_vector,P36_th_ice); 
-            plot(-t_vector,P36_eth_ice); 
-            plot(-t_vector,P36_mu_ice); 
-            
-            subplot(2,1,2)
-            plot(-t_vector,P_cosmo_ice_depth./P_cosmo_ice_depth); hold on;
-            plot(-t_vector,P36_s_ice./P_cosmo_ice_depth);
-            plot(-t_vector,P36_th_ice./P_cosmo_ice_depth); 
-            plot(-t_vector,P36_eth_ice./P_cosmo_ice_depth); 
-            plot(-t_vector,P36_mu_ice./P_cosmo_ice_depth); 
         end
     end
 %end       
