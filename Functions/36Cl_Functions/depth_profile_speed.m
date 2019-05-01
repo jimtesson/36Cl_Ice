@@ -73,8 +73,8 @@ N_samples = length(z_vector);
             Param_site = Param_site_in{i};
             
             % Ice parameters
-            Param_cosmo_ICE = Param_cosmo_ICE_in{i};
-            Param_site_ICE = Param_site_ICE_in{i};
+            Param_cosmo_ICE = Param_cosmo_ICE_in{1};
+            Param_site_ICE = Param_site_ICE_in{1};
             
             % get Production rate within the sample at surface z=.0;
             
@@ -122,6 +122,15 @@ N_samples = length(z_vector);
                 P36_rad = P36_rad./length(d_integ_samp);
                 P36_mu = P36_mu./length(d_integ_samp);
 
+                if(flag.plotP)
+                P36_s_percent = P36_s./P_cosmo.*100;
+                P36_th_percent = P36_th./P_cosmo.*100;
+                P36_eth_percent = P36_eth./P_cosmo.*100;
+                P36_mu_percent = P36_mu./P_cosmo.*100;
+                P36_rad_percent = P36_rad./P_cosmo.*100;
+                disp(['Rock: Spal (%):' num2str(mean(P36_s_percent)) ' Th (%):' num2str(mean(P36_th_percent)) ' Eth (%):' num2str(mean(P36_eth_percent)) ...
+                      ' Muon (%):' num2str(mean(P36_mu_percent)) ' Rad (%):' num2str(mean(P36_rad_percent))])
+                end
             % Compute scaling due to the ice cover
                 % Production rate within ice at surface
                 [~,P36_s_ice_0,P36_th_ice_0,P36_eth_ice_0,P36_mu_ice_0,P36_rad_ice_0] = prodz36_speed(Const_cosmo,Param_cosmo_ICE,sf_ICE,flag,depth_time_vector_surf);
@@ -142,7 +151,18 @@ N_samples = length(z_vector);
             P36_mu_cor = P36_mu .* P36_mu_ice./P36_mu_ice_0;
             
             P_tot_cor = P36_s_cor+P36_eth_cor+P36_th_cor+P36_mu_cor+P36_rad;
-            
+          
+            if(flag.plotP)
+                P36_s_percent = P36_s_cor./P_tot_cor.*100;
+                P36_th_percent = P36_th_cor./P_tot_cor.*100;
+                P36_eth_percent = P36_eth_cor./P_tot_cor.*100;
+                P36_mu_percent = P36_mu_cor./P_tot_cor.*100;
+                P36_rad_percent = P36_rad./P_tot_cor.*100;
+                
+                disp(['Ice : Spal (%):' num2str(mean(P36_s_percent)) ' Th (%):' num2str(mean(P36_th_percent)) ' Eth (%):' num2str(mean(P36_eth_percent)) ...
+                      ' Muon (%):' num2str(mean(P36_mu_percent)) ' Rad (%):' num2str(mean(P36_rad_percent))])
+                  disp(['--']);
+            end
          % Compute Total concentration
            N_calc_tot(i)=.0;
            N36=zeros(1,length(t_vector));

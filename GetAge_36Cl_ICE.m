@@ -1,14 +1,19 @@
 function [ ] = GetAge_36Cl_ICE()
 % Function of the crep program that calculates exposure ages
-
+    addpath(genpath('Functions'));
 % Loading data
     % ice
-    load Data_36_ice;
-    Data_ICE = Data;
-    clear Data;
-    % rock
-    load Data_36;
-
+    %load Data_36_ice;
+    Data_ICE = Load_data_36('INPUT/DATA_IN_ICE.xlsx');
+    % load samples data
+    Data = Load_data_36('INPUT/DATA_IN.xlsx');
+    %load('Data_36_2.mat')
+% Parameters given by user
+    NumGMDB = 2; % 1: Mush; 2: GLOPIS; 3: LSD; 4: own user geomagnetic db
+    Scheme = 1; % time dependant scaling model (1: LAL-STONE, 2: LSD)
+    Muon_model = 1; % 1: Exponential, 2: numeric integration of the flux (Balco 2008)
+    Atm = 0; % 0: ERA40 (Uppala et al. 2005), 1: standard atmosphere equation (NOAA 1976)
+    Data.GMDB = 1;
 % !!!!!!!!!!!!!!!!! to be given by the user: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     % Constants
      Data.lambda36 = 2.303e-6 ;
@@ -36,13 +41,13 @@ function [ ] = GetAge_36Cl_ICE()
         addpath Constants
         load('Constants/GMDB.mat');
         load('Constants/OtherCst.mat');
-
-        Atm=Data.Atm; % atmospheric model
+ 
+        Data.Atm = Atm;% atmospheric model
         
     % Geomagnetic data base
     if length(Data.GMDB)==1;
-        %NumGMDB=Data.GMDB;
-        NumGMDB = 2; % 1: Mush; 2: GLOPIS; 3: LSD; 4: own user geomagnetic db
+
+        %NumGMDB = 2; % 1: Mush; 2: GLOPIS; 3: LSD; 4: own user geomagnetic db
         if NumGMDB==1;
             SelGMDB=GMDB.Musch;
         elseif NumGMDB==2;
@@ -68,10 +73,6 @@ function [ ] = GetAge_36Cl_ICE()
 % Get 36Cl parameters 
     addpath(genpath('Functions/36Cl_Functions'));
     
-   % Model used for the modeling of 36Cl concentrations
-   
-     Scheme=1; % scaling model (1: LAL-STONE, 2: LSD)
-     Muon_model = 2; % 1: Exponential, 2: numeric integration of the flux (Balco 2008)
             % Muon
             if(Muon_model == 1)
                 flag.muon = 'exp';  % Muon attenuation length approximated by exponential (Schimmelfenning 2009).  
@@ -112,7 +113,7 @@ function [ ] = GetAge_36Cl_ICE()
     Param_cosmo_ICE = clrock(Data_formatted_ICE,Param_site_ICE,Const_cosmo,Sf_ICE);
     
     %% Lets calculate ages
-    for is=1:NbSpl
+    for is=1:1%NbSpl
         % Create de dataset
         dataset(1,:) = Data.NuclCon(:);
         dataset(2,:) = Data.NuclErr(:);
@@ -126,16 +127,18 @@ function [ ] = GetAge_36Cl_ICE()
         flag.max_bounds = 400000; % maximum bound for the search
         flag.search = 'fminsearch'; %flag.search = 'nmsmax';
         flag.plot = 1;
+        flag.plotP = 1;
         
-        t_expo = 300000;
+        t_expo = 500000;
         t_vector = [0:100:t_expo];
-        t_LGM = 20000;
-        t_degla = 10000; 
+        t_LGM = 10000;
+        t_degla = 8000; 
         thick_test = [30 60 100 150 200];
         
         for i=1:length(thick_test)
+            
         ice_thickness = thick_test(i).*100; % in cm
-        
+        disp(['Ice thickness = ' num2str(ice_thickness/100) 'm']);
         z_history=ones(1,length(t_vector)).*ice_thickness;
         i_postgla = find(t_vector<t_degla);
         z_history(i_postgla)=.0;

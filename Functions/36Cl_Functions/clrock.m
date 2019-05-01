@@ -310,8 +310,8 @@ MjZj_targ_sum = sum(Num_k.*ppm_targ(:,1:61)./A_k)*1e-6 ;
 
 f_c_k_bulk = MjZj_bulk./MjZj_bulk_sum;
 
-f_c_Ca = (Num_k(49)*ppm_targ(62)*1e-6/A_k(49))/(sum(Num_k.*ppm_targ(:,1:61)./A_k)*1e-6) ; % for Ca (ICP)
-f_c_K = (Num_k(51)*ppm_targ(51)*1e-6/A_k(51))/(sum(Num_k.*ppm_targ(:,1:61)./A_k)*1e-6) ; % for K
+f_c_Ca = (Num_k(49)*ppm_targ(62)*1e-6/A_k(49))/(sum(Num_k.*ppm_bulk(:,1:61)./A_k)*1e-6) ; % for Ca (ICP)
+f_c_K = (Num_k(51)*ppm_targ(51)*1e-6/A_k(51))/(sum(Num_k.*ppm_bulk(:,1:61)./A_k)*1e-6) ; % for K
 
 Y_Sigma_Ca = f_c_Ca*f_i_Ca*f_d_Ca*f_n_Ca ; % 36Cl production per stopped muon 
 % Y_Sigma_Ca DEPENDS ON CHEMICAL COMPOSITION

@@ -76,11 +76,12 @@ for i=1:NbSpl;
                 + lr(7).*lat.^6;
             dtdz = -dtdz;
             P=site_slp .* exp( (gmr./dtdz) .* ( log(site_T) - log(site_T - (alt.*dtdz)) ) );
-     
+            
+            
             [SF_St,SF_St_sp,SF_St_mu]=StoneFactorL(Rc,P,site_slp);
             
         end
-        
+
         %[SF_St2,SF_St_sp2,SF_St_mu2] =StoneFactV2(lat,long,alt,atm);
         out.SF_St = SF_St;
         out.SF_St_sp = SF_St_sp;

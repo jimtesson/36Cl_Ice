@@ -65,7 +65,7 @@ function [Data,Param_site] = Init_var(DATA_CREP)
 %
 
 % number of samples
-[~,N_samples] = size(DATA_CREP.Z);
+N_samples = length(DATA_CREP.Z);
 
 for i=1:N_samples
 
@@ -224,7 +224,7 @@ uncert_target(1,5) = DATA_CREP.Cl_targ_er(i); % Cl (ppm)
 
 %----- Various parameters for each sample
 
-site.sample_name = DATA_CREP.Samples{1,i};
+site.sample_name = DATA_CREP.Samples{i};
 site.lat = DATA_CREP.Lat(i);
 site.long = DATA_CREP.Lon(i);
 site.alt = DATA_CREP.Alt(i);
